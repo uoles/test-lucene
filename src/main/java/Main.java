@@ -17,6 +17,7 @@ import java.io.IOException;
  */
 public class Main {
 
+    private static final int C_RESULT_COUNT = 100;
     private static final DataStore dataStore = new DataStore();
 
     public static void main(String[] args) throws IOException {
@@ -30,23 +31,20 @@ public class Main {
         }
 
         // нечеткое соответствие '*'
-        TopDocs results = dataStore.search("title", "manag*", 5);
-        print(results);
-
-        // =============
-        results = dataStore.search("title", "Dummies", 5);
-        print(results);
-
-        // =============
-        results = dataStore.search("isbn", "99*", 5);
-        print(results);
-
-        // =============
-        results = dataStore.search("isbn", "55*", 1);
-        print(results);
+        search("title", "manag*");
+        search("title", "Dummies");
+        search("isbn", "99*");
+        search("isbn", "55*");
+        search("isbn", "isbn: 55*");
+        search("isbn", "isbn: 55* AND title: mana*");
+        search(null, "isbn: 55* AND title: mana*");
+        search(null, "55*");
     }
 
-    private static void print(final TopDocs results) throws IOException {
+    private static void search(final String documentName, final String query) throws IOException {
+        System.out.println("Search query: '" + query + "'");
+        TopDocs results = dataStore.search(documentName, query, C_RESULT_COUNT);
+
         ScoreDoc[] hits = results.scoreDocs;
         System.out.println("Found " + hits.length + " hits.");
         for(int i=0; i < hits.length; ++i) {
@@ -54,6 +52,8 @@ public class Main {
             Document d = dataStore.getSearcher().doc(docId);
             System.out.println((i + 1) + ". " + d.get("isbn") + "\t" + d.get("title"));
         }
+
+        System.out.println("========");
     }
 
     private static void addDoc(final IndexWriter writer, final String title, final String isbn) throws IOException {
