@@ -24,6 +24,7 @@ public class Main {
         try (IndexWriter writer = dataStore.getNewIndexWriter()) {
             addDoc(writer, "Lucene in Action", "193398817");
             addDoc(writer, "Lucene for Dummies", "55320055Z");
+            addDoc(writer, "Lucene for Dum-mies", "55320055Z");
             addDoc(writer, "Managing Gigabytes", "55063554A");
             addDoc(writer, "The Art of Computer Science", "99003323X");
         } catch (IOException e) {
@@ -31,8 +32,9 @@ public class Main {
         }
 
         // нечеткое соответствие '*'
-        search("title", "manag*");
+        search("title", "*anag*");
         search("title", "Dummies");
+        search("title", "Dum?*");
         search("isbn", "99*");
         search("isbn", "55*");
         search("isbn", "isbn: 55*");
@@ -41,19 +43,23 @@ public class Main {
         search(null, "55*");
     }
 
-    private static void search(final String documentName, final String query) throws IOException {
-        System.out.println("Search query: '" + query + "'");
-        TopDocs results = dataStore.search(documentName, query, C_RESULT_COUNT);
+    private static void search(final String documentName, final String query) {
+        try {
+            System.out.println("Search query: '" + query + "'");
+            TopDocs results = dataStore.search(documentName, query, C_RESULT_COUNT);
 
-        ScoreDoc[] hits = results.scoreDocs;
-        System.out.println("Found " + hits.length + " hits.");
-        for(int i=0; i < hits.length; ++i) {
-            int docId = hits[i].doc;
-            Document d = dataStore.getSearcher().doc(docId);
-            System.out.println((i + 1) + ". " + d.get("isbn") + "\t" + d.get("title"));
+            ScoreDoc[] hits = results.scoreDocs;
+            System.out.println("Found " + hits.length + " hits.");
+            for(int i=0; i < hits.length; ++i) {
+                int docId = hits[i].doc;
+                Document d = dataStore.getSearcher().doc(docId);
+                System.out.println((i + 1) + ". " + d.get("isbn") + "\t" + d.get("title"));
+            }
+
+            System.out.println("========");
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
         }
-
-        System.out.println("========");
     }
 
     private static void addDoc(final IndexWriter writer, final String title, final String isbn) throws IOException {

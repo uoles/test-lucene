@@ -1,4 +1,5 @@
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
@@ -22,7 +23,7 @@ import java.io.IOException;
  */
 public class DataStore {
 
-    private final StandardAnalyzer standardAnalyzer = new StandardAnalyzer();
+    private final Analyzer standardAnalyzer = new WhitespaceAnalyzer();
     private final Directory directory = new ByteBuffersDirectory();
 
     public DataStore() {
@@ -45,7 +46,9 @@ public class DataStore {
     }
 
     public QueryParser getQueryParser(final String documentName) {
-        return new QueryParser(documentName, standardAnalyzer);
+        QueryParser parser = new QueryParser(documentName, standardAnalyzer);
+        parser.setAllowLeadingWildcard(true);
+        return parser;
     }
 
     public TopDocs search(final String documentName, final String query, int count) {
