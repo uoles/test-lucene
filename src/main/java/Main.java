@@ -1,3 +1,4 @@
+import com.google.common.base.Stopwatch;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
@@ -7,6 +8,7 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * test-lucene
@@ -44,6 +46,7 @@ public class Main {
     }
 
     private static void search(final String documentName, final String query) {
+        Stopwatch stopwatch = Stopwatch.createStarted();
         try {
             System.out.println("Search query: '" + query + "'");
             TopDocs results = dataStore.search(documentName, query, C_RESULT_COUNT);
@@ -60,6 +63,8 @@ public class Main {
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
+        long workingTime = stopwatch.stop().elapsed(TimeUnit.MILLISECONDS);
+        System.out.println("--- Lucene search work time: " + workingTime + " ms");
     }
 
     private static void addDoc(final IndexWriter writer, final String title, final String isbn) throws IOException {
