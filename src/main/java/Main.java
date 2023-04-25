@@ -20,7 +20,7 @@ public class Main {
     private static final int C_RESULT_COUNT = 100;
     private static final DataStore dataStore = new DataStore();
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         try (IndexWriter writer = dataStore.getNewIndexWriter()) {
             addDoc(writer, "Lucene in Action", "193398817");
             addDoc(writer, "Lucene for Dummies", "55320055Z");
@@ -34,7 +34,7 @@ public class Main {
         // нечеткое соответствие '*'
         search("title", "*anag*");
         search("title", "Dummies");
-        search("title", "Dum?*");
+        search("title", "Dum?mies");
         search("isbn", "99*");
         search("isbn", "55*");
         search("isbn", "isbn: 55*");

@@ -23,14 +23,14 @@ import java.io.IOException;
  */
 public class DataStore {
 
-    private final Analyzer standardAnalyzer = new WhitespaceAnalyzer();
+    private final Analyzer analyzer = new WhitespaceAnalyzer();
     private final Directory directory = new ByteBuffersDirectory();
 
     public DataStore() {
     }
 
     public IndexWriter getNewIndexWriter() throws IOException {
-        IndexWriterConfig config = new IndexWriterConfig(standardAnalyzer);
+        IndexWriterConfig config = new IndexWriterConfig(analyzer);
         return new IndexWriter(directory, config);
     }
 
@@ -46,7 +46,7 @@ public class DataStore {
     }
 
     public QueryParser getQueryParser(final String documentName) {
-        QueryParser parser = new QueryParser(documentName, standardAnalyzer);
+        QueryParser parser = new QueryParser(documentName, analyzer);
         parser.setAllowLeadingWildcard(true);
         return parser;
     }
