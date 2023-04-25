@@ -58,13 +58,13 @@ public class Main {
                 Document d = dataStore.getSearcher().doc(docId);
                 System.out.println((i + 1) + ". " + d.get("isbn") + "\t" + d.get("title"));
             }
-
-            System.out.println("========");
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
+        } finally {
+            long workingTime = stopwatch.stop().elapsed(TimeUnit.MILLISECONDS);
+            System.out.println("Lucene search work time: " + workingTime + " ms");
+            System.out.println("========");
         }
-        long workingTime = stopwatch.stop().elapsed(TimeUnit.MILLISECONDS);
-        System.out.println("--- Lucene search work time: " + workingTime + " ms");
     }
 
     private static void addDoc(final IndexWriter writer, final String title, final String isbn) throws IOException {
